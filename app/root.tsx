@@ -7,6 +7,7 @@ import {
   ScrollRestoration,
 } from '@remix-run/react'
 
+import { Link } from './lib/components/Link'
 import './tailwind.css'
 
 export const links: LinksFunction = () => [
@@ -31,8 +32,18 @@ export function Layout({ children }: { children: React.ReactNode }) {
         <Meta />
         <Links />
       </head>
-      <body className="size-full">
-        {children}
+      <body className="size-full grid grid-cols-12 grid-rows-[64px_1fr]">
+        <header className="col-span-full flex items-center px-4">
+          <div className="py-3">
+            <Link to="/">AI PLAYGROUND___</Link>
+          </div>
+        </header>
+        <nav className="col-span-2 overflow-hidden px-5 pt-5">
+          <Link to="/auto-desc">Product Auto Desc</Link>
+        </nav>
+        <main className="col-start-3 col-span-full">
+          {children}
+        </main>
         <ScrollRestoration />
         <Scripts />
       </body>
