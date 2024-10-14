@@ -1,4 +1,4 @@
-import type { FC, HTMLAttributes } from 'react'
+import type { FC, PropsWithChildren } from 'react'
 
 export default (function Article({ title, children }) {
   return (
@@ -7,4 +7,4 @@ export default (function Article({ title, children }) {
       {children}
     </article>
   )
-}) satisfies FC<{ title: string } & HTMLAttributes<HTMLElement>>
+}) satisfies FC<PropsWithChildren<{ title: string }>>

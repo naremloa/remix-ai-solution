@@ -59,7 +59,8 @@ export function Layout({ children }: { children: React.ReactNode }) {
             initial="open"
             animate={menu ? 'open' : 'closed'}
           >
-            <Link to="/auto-desc">Product Auto Desc</Link>
+            <Link to="/collaborate-writing">Collaborate on writing</Link>
+            <Link to="/assist-product-listing">Assist product listing</Link>
           </motion.nav>
           <main className="flex-1">
             {children}
