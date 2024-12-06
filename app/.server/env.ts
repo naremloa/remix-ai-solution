@@ -1,7 +1,7 @@
 import type { TypeOf } from 'zod'
 import { env } from 'node:process'
 import { z } from 'zod'
-import { zParserSync } from '~/utils/zod-helper'
+import { zParserSync } from '~/lib/utils/zod-helper'
 
 const envSchema = z.object({
   NODE_ENV: z.union([z.literal('development'), z.literal('production')]),

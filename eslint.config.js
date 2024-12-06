@@ -5,7 +5,7 @@ export default antfu({
   react: true,
   jsx: true,
 }, {
-  ignores: ['app/components/**/*'],
+  ignores: ['app/shadcn/**/*'],
 }, {
   rules: {
     'no-console': 'warn',

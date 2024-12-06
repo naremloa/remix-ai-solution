@@ -1,6 +1,6 @@
-import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/components/ui/card'
-import { Separator } from '~/components/ui/separator'
 import Article from '~/lib/components/Article'
+import { Card, CardContent, CardDescription, CardHeader, CardTitle } from '~/shadcn/components/ui/card'
+import { Separator } from '~/shadcn/components/ui/separator'
 
 export default function Index() {
   return (

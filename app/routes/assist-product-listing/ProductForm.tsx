@@ -2,10 +2,10 @@ import type { TypeOf } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FormProvider, useForm } from 'react-hook-form'
 import { z } from 'zod'
-import { Button } from '~/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form'
-import { Input } from '~/components/ui/input'
-import { useImperativeSubmit } from '~/hook/use-imperative-submit'
+import { useImperativeSubmit } from '~/lib/hooks/use-imperative-submit'
+import { Button } from '~/shadcn/components/ui/button'
+import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/shadcn/components/ui/form'
+import { Input } from '~/shadcn/components/ui/input'
 
 const categoryOptions: { value: string, label: string }[] = [
   { value: 'brand1', label: '品牌 1' },

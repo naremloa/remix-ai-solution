@@ -1,8 +1,8 @@
 import type { ActionFunctionArgs } from '@remix-run/node'
 import { json } from '@remix-run/node'
-import { Card, CardContent } from '~/components/ui/card'
-import { Separator } from '~/components/ui/separator'
 import Article from '~/lib/components/Article'
+import { Card, CardContent } from '~/shadcn/components/ui/card'
+import { Separator } from '~/shadcn/components/ui/separator'
 import ProductForm from './ProductForm'
 
 export async function action({ request }: ActionFunctionArgs) {

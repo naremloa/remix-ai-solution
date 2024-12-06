@@ -1,6 +1,6 @@
 import type { TypeOf } from 'zod'
 import { z } from 'zod'
-import { zParserSync } from '~/utils/zod-helper'
+import { zParserSync } from '~/lib/utils/zod-helper'
 import { env } from './env'
 
 const configSchema = z.object({
