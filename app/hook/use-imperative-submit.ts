@@ -9,6 +9,7 @@ import { ofetch } from 'ofetch'
 import { useCallback } from 'react'
 
 export function useImperativeSubmit<Input extends BodyInit | Record<string, any> | null | undefined, Return extends Record<string, any> = any>(
+  method: 'POST' | 'PUT' | 'PATCH' | 'DELETE',
   body: (data: Input) => BodyInit | Record<string, any> | null | undefined,
 ) {
   const action = useFormAction()
@@ -20,7 +21,7 @@ export function useImperativeSubmit<Input extends BodyInit | Record<string, any>
   return useCallback(
     async (data: Input) => {
       const response = await ofetch<Return>(url, {
-        method: 'POST',
+        method,
         body: body(data),
       })
       return response
