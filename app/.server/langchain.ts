@@ -11,7 +11,9 @@ declare global {
 }
 
 function createLangchainSingleton() {
-  const chat = new AzureChatOpenAI(config.azure)
+  const chat = new AzureChatOpenAI({
+    ...config.azure,
+  })
   return chat
 }
 

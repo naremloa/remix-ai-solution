@@ -1,17 +1,7 @@
-import type { ActionFunctionArgs } from '@remix-run/node'
-import { json } from '@remix-run/node'
 import Article from '~/lib/components/Article'
 import { Card, CardContent } from '~/shadcn/components/ui/card'
 import { Separator } from '~/shadcn/components/ui/separator'
 import ProductForm from './ProductForm'
-
-export async function action({ request }: ActionFunctionArgs) {
-  const data = await request.json()
-  console.log('method', request.method)
-  // console.log('message', data)
-  // console.log('langchain', langchain)
-  return json({ message: `Hello, ${data}` })
-}
 
 export default function Index() {
   return (

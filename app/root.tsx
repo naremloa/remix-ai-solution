@@ -12,6 +12,7 @@ import { AnimatePresence, motion } from 'framer-motion'
 
 import { useState } from 'react'
 import { Link } from './lib/components/Link'
+import { Toaster } from './shadcn/components/ui/toaster'
 import './tailwind.css'
 
 export const links: LinksFunction = () => [
@@ -66,6 +67,7 @@ export function Layout({ children }: { children: React.ReactNode }) {
             {children}
           </main>
         </div>
+        <Toaster></Toaster>
 
         <ScrollRestoration />
         <Scripts />
