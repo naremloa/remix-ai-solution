@@ -1,4 +1,8 @@
+import type { ActionFunctionArgs } from '@remix-run/node'
+import type { SubmitHandler } from 'react-hook-form'
+import type { TypeOf } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
+import { json } from '@remix-run/node'
 import { FormProvider, useForm, useFormContext } from 'react-hook-form'
 import { z } from 'zod'
 import { Button } from '~/components/ui/button'
@@ -6,7 +10,15 @@ import { Card, CardContent } from '~/components/ui/card'
 import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/components/ui/form'
 import { Input } from '~/components/ui/input'
 import { Separator } from '~/components/ui/separator'
+import { useImperativeSubmit } from '~/hook/use-imperative-submit'
 import Article from '~/lib/components/Article'
+
+export async function action({ request }: ActionFunctionArgs) {
+  const data = await request.json()
+  // console.log('message', data)
+  // console.log('langchain', langchain)
+  return json({ message: `Hello, ${data}` })
+}
 
 const categoryOptions: { value: string, label: string }[] = [
   { value: 'brand1', label: '品牌 1' },
@@ -18,7 +30,6 @@ const categoryOptions: { value: string, label: string }[] = [
 
 const formSchema = z.object({
   title: z.string().min(1),
-  model: z.string().min(1),
   category: z.string().nullish(),
 })
 
@@ -27,13 +38,11 @@ export default function Index() {
     resolver: zodResolver(formSchema),
     defaultValues: {
       title: '',
-      model: '',
       category: null,
     },
   })
-  function onSubmit(values: z.infer<typeof formSchema>) {
-    console.log(values)
-  }
+
+  const onSubmit: SubmitHandler<TypeOf<typeof formSchema>> = useImperativeSubmit<TypeOf<typeof formSchema>>(data => data)
 
   return (
     <Article title="Assist with product listing">
@@ -44,36 +53,28 @@ export default function Index() {
           <FormProvider {...form}>
             <Form {...form}>
               <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-                <NestedForm></NestedForm>
+                <FormField
+                  control={form.control}
+                  name="title"
+                  render={({ field: { value, ...rest } }) => (
+                    <FormItem>
+                      <FormLabel>Username</FormLabel>
+                      <FormControl>
+                        <Input placeholder="shadcn" value={value ?? undefined} {...rest} />
+                      </FormControl>
+                      <FormDescription>
+                        This is your public display name.
+                      </FormDescription>
+                      <FormMessage />
+                    </FormItem>
+                  )}
+                />
                 <Button type="submit">Submit</Button>
               </form>
             </Form>
           </FormProvider>
-
         </CardContent>
       </Card>
     </Article>
-  )
-}
-
-function NestedForm() {
-  const { control } = useFormContext<z.infer<typeof formSchema>>()
-  return (
-    <FormField
-      control={control}
-      name="title"
-      render={({ field: { value, ...rest } }) => (
-        <FormItem>
-          <FormLabel>Username</FormLabel>
-          <FormControl>
-            <Input placeholder="shadcn" value={value ?? undefined} {...rest} />
-          </FormControl>
-          <FormDescription>
-            This is your public display name.
-          </FormDescription>
-          <FormMessage />
-        </FormItem>
-      )}
-    />
   )
 }
