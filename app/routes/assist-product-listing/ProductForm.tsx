@@ -1,106 +1,128 @@
-/**
- * some solutions
- * [Add position prop to toaster #128](https://github.com/shadcn-ui/ui/issues/128)
- */
 import type { SubmitHandler } from 'react-hook-form'
-import type { TypeOf } from 'zod'
 import { zodResolver } from '@hookform/resolvers/zod'
-import { Loader2 } from 'lucide-react'
-import { ofetch } from 'ofetch'
+import { FetchError, ofetch } from 'ofetch'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
-import { z } from 'zod'
+import { Button } from '~/lib/components/Button'
+import { toast } from '~/lib/hooks/use-toast'
 import { decodeLangchainStream } from '~/lib/utils/stream'
-import { Button } from '~/shadcn/components/ui/button'
-import { Form, FormControl, FormDescription, FormField, FormItem, FormLabel, FormMessage } from '~/shadcn/components/ui/form'
-import { Input } from '~/shadcn/components/ui/input'
-import { useToast } from '~/shadcn/hooks/use-toast'
-import { cn } from '~/shadcn/utils'
-
-const categoryOptions: { value: string, label: string }[] = [
-  { value: 'brand1', label: '品牌 1' },
-  { value: 'brand2', label: '品牌 2' },
-  { value: 'brand3', label: '品牌 3' },
-  { value: 'brand4', label: '品牌 4' },
-  { value: 'brand5', label: '品牌 5' },
-]
-
-const formSchema = z.object({
-  title: z.string().nullish(),
-  category: z.string().nullish(),
-})
-
-export type FormData = TypeOf<typeof formSchema>
+import { Card, CardContent, CardHeader, CardTitle } from '~/shadcn/components/ui/card'
+import { Form } from '~/shadcn/components/ui/form'
+import { brandOptions, type FormData, formSchema, type ProductGenType } from './consts'
+import { FormInput, FormSelect, FormTextarea } from './FormField'
+import { SpecBox, SpecItem } from './Spec'
 
 export default function ProductForm() {
-  const { toast } = useToast()
-
-  const form = useForm<z.infer<typeof formSchema>>({
+  const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '',
-      category: null,
+      title: '【動漫角色】NANOBLOCK積木 NBMC_23S Mininano 我的英雄學院 vol.2一盒(一盒6PCS)  綠谷出久、切島銳兒郎、相澤消太、蛙吹梅雨、奮進人、霍克斯',
+      model: 'KD22132 x6',
+      brand: '',
+      friendlyUrl: '',
+      seoTitle: '',
+      seoDescription: '',
+      seoKeywords: '',
+      ogTitle: '',
+      ogDescription: '',
+      detail: '',
     },
   })
 
-  const [loading, setLoading] = useState(false)
+  const formData = form.watch()
 
-  const [streamedText, setStreamedText] = useState('')
+  const [loading, setLoading] = useState(false)
   const onSubmit: SubmitHandler<FormData> = async (data) => {
     setLoading(true)
-    setStreamedText('')
-    const response = await ofetch('/api/product', {
-      method: 'POST',
-      body: data,
-      responseType: 'stream',
-    })
-    // setLoading(false)
-    // toast({
-    //   className: cn('top-0 right-0 flex fixed md:max-w-[420px] md:top-4 md:right-4'),
-    //   title: 'responpse',
-    //   description: (
-    //     <pre>{JSON.stringify(response, null, 2)}</pre>
-    //   ),
-    //   duration: 10000,
-    // })
-
-    decodeLangchainStream({
-      response,
-      decoder: value => setStreamedText(prev => `${prev}${value}`),
-    })
+    await new Promise(res => setTimeout(res, 3000))
+    console.debug('submit data', data)
     setLoading(false)
   }
 
+  const sparkle = async (type: ProductGenType) => {
+    try {
+      setLoading(true)
+      const response = await ofetch('/api/product', {
+        method: 'POST',
+        body: {
+          type,
+          data: {
+            title: formData.title,
+            model: formData.model,
+            brand: formData.brand,
+          },
+        },
+        responseType: 'stream',
+      })
+      form.setValue(type, '')
+      decodeLangchainStream({
+        response,
+        decoder: (value) => {
+          form.setValue(type, `${form.getValues()[type]}${value}`)
+        },
+      })
+    }
+    catch (err: unknown) {
+      let message: string = ''
+      if (err instanceof FetchError) {
+        const errData = await err.response?.json() as { message: string } | undefined
+        message = errData?.message ?? ''
+      }
+      else {
+        message = String(err)
+      }
+      toast({
+        title: 'API Error',
+        description: message,
+        duration: 10000,
+        variant: 'destructive',
+      })
+    }
+    finally {
+      setLoading(false)
+    }
+  }
+
   return (
-    <>
+    <div className="flex">
       <FormProvider {...form}>
         <Form {...form}>
-          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
-            <FormField
-              control={form.control}
-              name="title"
-              render={({ field: { value, ...rest } }) => (
-                <FormItem>
-                  <FormLabel>Username</FormLabel>
-                  <FormControl>
-                    <Input placeholder="shadcn" value={value ?? undefined} {...rest} />
-                  </FormControl>
-                  <FormDescription>
-                    This is your public display name.
-                  </FormDescription>
-                  <FormMessage />
-                </FormItem>
-              )}
-            />
-            <Button type="submit" disabled={loading}>
-              {loading ? <Loader2 className="animate-spin" /> : null}
-              Submit
-            </Button>
+          <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex-[2]">
+            <FormInput<FormData> label="名稱" name="title" required></FormInput>
+            <FormInput<FormData> label="型號" name="model" required></FormInput>
+            <FormSelect<FormData> label="品牌" name="brand" required options={brandOptions}></FormSelect>
+            <FormInput<FormData> label="友善連結" name="friendlyUrl" sparkle={() => sparkle('friendlyUrl')}></FormInput>
+            <FormInput<FormData> label="SEO 標題" name="seoTitle" sparkle={() => sparkle('seoTitle')}></FormInput>
+            <FormTextarea<FormData>
+              label="SEO 描述"
+              name="seoDescription"
+              sparkle={() => sparkle('seoDescription')}
+              rows={5}
+            >
+            </FormTextarea>
+            <FormInput<FormData> label="SEO 關鍵字" name="seoKeywords" sparkle={() => sparkle('seoKeywords')}></FormInput>
+            <FormInput<FormData> label="OG 標題" name="ogTitle" sparkle={() => sparkle('ogTitle')}></FormInput>
+            <FormTextarea<FormData> label="OG 描述" name="ogDescription" sparkle={() => sparkle('ogDescription')} rows={5}></FormTextarea>
+            <FormTextarea<FormData> label="詳細介紹" name="detail" sparkle={() => sparkle('detail')} rows={10}></FormTextarea>
+            <Button type="submit" loading={loading}>Submit</Button>
           </form>
         </Form>
       </FormProvider>
-      <div>{streamedText}</div>
-    </>
+      <div className="flex-1 m-4">
+        <Card className="sticky top-[60px] text-sm">
+          <CardHeader>
+            <CardTitle>規格</CardTitle>
+          </CardHeader>
+          <CardContent>
+            <SpecBox>
+              <SpecItem label="名稱" value={formData.title}></SpecItem>
+              <SpecItem label="型號" value={formData.model}></SpecItem>
+              <SpecItem label="品牌" value={brandOptions.find(i => i.value === formData.brand)?.label ?? ''}></SpecItem>
+            </SpecBox>
+          </CardContent>
+        </Card>
+      </div>
+    </div>
 
   )
 }
