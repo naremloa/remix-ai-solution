@@ -16,8 +16,8 @@ export default function ProductForm() {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
-      title: '【動漫角色】NANOBLOCK積木 NBMC_23S Mininano 我的英雄學院 vol.2一盒(一盒6PCS)  綠谷出久、切島銳兒郎、相澤消太、蛙吹梅雨、奮進人、霍克斯',
-      model: 'KD22132 x6',
+      title: '',
+      model: '',
       brand: '',
       friendlyUrl: '',
       seoTitle: '',
@@ -90,7 +90,7 @@ export default function ProductForm() {
           <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8 flex-[2]">
             <FormInput<FormData> label="名稱" name="title" required></FormInput>
             <FormInput<FormData> label="型號" name="model" required></FormInput>
-            <FormSelect<FormData> label="品牌" name="brand" required options={brandOptions}></FormSelect>
+            <FormInput<FormData> label="品牌" name="brand" required></FormInput>
             <FormInput<FormData> label="友善連結" name="friendlyUrl" sparkle={() => sparkle('friendlyUrl')}></FormInput>
             <FormInput<FormData> label="SEO 標題" name="seoTitle" sparkle={() => sparkle('seoTitle')}></FormInput>
             <FormTextarea<FormData>
@@ -117,7 +117,7 @@ export default function ProductForm() {
             <SpecBox>
               <SpecItem label="名稱" value={formData.title}></SpecItem>
               <SpecItem label="型號" value={formData.model}></SpecItem>
-              <SpecItem label="品牌" value={brandOptions.find(i => i.value === formData.brand)?.label ?? ''}></SpecItem>
+              <SpecItem label="品牌" value={formData.brand}></SpecItem>
             </SpecBox>
           </CardContent>
         </Card>

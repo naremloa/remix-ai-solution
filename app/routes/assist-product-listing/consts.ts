@@ -24,7 +24,7 @@ export const brandOptions: { value: string, label: string }[] = [
 export const formSchema = z.object({
   title: z.string().min(1),
   model: z.string().min(1),
-  brand: z.string().optional(),
+  brand: z.string().min(1),
   friendlyUrl: z.string().nullish(),
   seoTitle: z.string().nullish(),
   seoDescription: z.string().nullish(),
