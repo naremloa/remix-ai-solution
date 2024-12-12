@@ -8,10 +8,11 @@ import {
   ScrollRestoration,
   useLocation,
 } from '@remix-run/react'
-import { AnimatePresence, motion } from 'framer-motion'
+import { AnimatePresence, motion } from 'motion/react'
 
 import { useState } from 'react'
 import { Link } from './lib/components/Link'
+import { routes } from './routes'
 import { Toaster } from './shadcn/components/ui/toaster'
 import './tailwind.css'
 
@@ -29,7 +30,7 @@ export const links: LinksFunction = () => [
 ]
 
 export function Layout({ children }: { children: React.ReactNode }) {
-  const [menu, setMenu] = useState(true)
+  const [menu, setMenu] = useState(false)
   return (
     <html className="dark size-full" lang="en" style={{ colorScheme: 'dark' }}>
       <head>
@@ -52,16 +53,32 @@ export function Layout({ children }: { children: React.ReactNode }) {
         </header>
         <div className="flex">
           <motion.nav
-            className={`overflow-hidden px-5 pt-5 flex flex-col gap-4 ${menu ? 'visible' : 'invisible'}`}
             variants={{
               open: { maxWidth: '240px', minWidth: '240px', opacity: 1 },
-              closed: { width: '0px', minWidth: 0, padding: '0px', opacity: 0 },
+              close: { width: '0px', minWidth: 0, padding: '0px', opacity: 0, transition: { delay: 0.1 } },
             }}
-            initial="open"
-            animate={menu ? 'open' : 'closed'}
+            initial="close"
+            animate={menu ? 'open' : 'close'}
           >
-            <Link to="/collaborate-writing">Collaborate on writing</Link>
-            <Link to="/assist-product-listing">Assist product listing</Link>
+            <motion.div
+              className="overflow-hidden px-5 pt-5 flex flex-col gap-4"
+              variants={{
+                visible: { opacity: 1, transition: { delay: 0.1 } },
+                hidden: { opacity: 0 },
+              }}
+              initial="hidden"
+              animate={menu ? 'visible' : 'hidden'}
+            >
+              {routes.map(route => (
+                <Link
+                  className="select-none"
+                  key={route.path}
+                  to={route.path}
+                >
+                  {route.label}
+                </Link>
+              ))}
+            </motion.div>
           </motion.nav>
           <main className="flex-1">
             {children}
@@ -82,12 +99,12 @@ export default function App() {
       <motion.div
         key={useLocation().pathname}
         variants={{
-          initial: { opacity: 0, x: 100 },
-          animate: { opacity: 1, x: 0 },
+          initial: { opacity: 0 },
+          animate: { opacity: 1 },
         }}
         initial="initial"
         animate="animate"
-        transition={{ duration: 0.2 }}
+        transition={{ duration: 0.5 }}
       >
         <Outlet />
       </motion.div>

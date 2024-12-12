@@ -1,6 +1,8 @@
 import type { FC } from 'react'
-import Article from '~/lib/components/Article'
+import { Article } from '~/lib/components/Article'
+import { Link } from '~/lib/components/Link'
 import TechStack from '~/lib/components/TechStack'
+import { routes } from '~/routes'
 
 export default function Index() {
   const techStackList = [
@@ -18,6 +20,17 @@ export default function Index() {
       <p className="flex gap-4">
         <span>Tech Stack:</span>
         {techStackList.map(props => (<TechStack {...props} key={props.title}></TechStack>))}
+      </p>
+      <p>
+        DEMO:
+        <p className="flex flex-col gap-4 my-4">
+          {routes.map(route => (
+            <span className="select-none" key={route.path}>
+              <Link to={route.path}>{route.label}</Link>
+              {route.description ? <span>{` - ${route.description}`}</span> : null}
+            </span>
+          ))}
+        </p>
       </p>
     </Article>
   )
