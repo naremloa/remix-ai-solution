@@ -12,7 +12,7 @@ export function SpecItem({ value, label }: { value?: string | null, label: strin
   return (
     <div className="flex justify-between space-x-4">
       <div className="flex-shrink-0">{label}</div>
-      <div>{value ?? ''}</div>
+      <div className="break-all">{value ?? ''}</div>
     </div>
   )
 }

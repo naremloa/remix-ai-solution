@@ -56,7 +56,7 @@ function createChatTemplate<Input extends Record<string, any>>({ systemMessage, 
 }
 
 export async function action({ request }: ActionFunctionArgs) {
-  const { type, data } = await request.json() as { type: ProductGenType, data: Pick<FormData, 'title' | 'model' | 'brand'> }
+  const { type, data } = await request.json() as { type: ProductGenType, data: Pick<FormData, 'title' | 'model' | 'brand'> & { other: string } }
 
   if (!data.title) {
     throw json({ message: 'title is required' }, { status: 400 })
@@ -96,6 +96,7 @@ export async function action({ request }: ActionFunctionArgs) {
       title: data.title ?? '',
       model: data.model ?? '',
       brand: data.brand ?? '',
+      other: data.other ?? '',
       category: '',
       tag: '',
     }),

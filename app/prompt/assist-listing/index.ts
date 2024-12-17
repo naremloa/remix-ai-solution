@@ -1,4 +1,4 @@
-import { HumanMessage, SystemMessage } from '@langchain/core/messages'
+import { HumanMessage } from '@langchain/core/messages'
 
 // v1
 // export const systemMessage = `
@@ -31,8 +31,7 @@ export const systemMessage = `
 • 商品名稱: {title}
 • 商品型號: {model}
 • 商品品牌: {brand}
-• 商品類別: {category}
-• 商品標籤: {tag}
+• 補充資訊: {other}
 職責範圍：
   1. 針對欄位生成內容：用戶會提供欄位名稱與欄位描述，你需基於提供的規格資料，生成對應的內容。例如：
     • 欄位名稱: 商品描述

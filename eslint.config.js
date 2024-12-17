@@ -9,6 +9,7 @@ export default antfu({
 }, {
   rules: {
     'no-console': 'warn',
+    'unused-imports/no-unused-imports': 'warn',
     'unused-imports/no-unused-vars': 'warn',
     'ts/consistent-type-definitions': ['warn', 'type'],
     'react-refresh/only-export-components': ['warn', { allowExportNames: ['clientLoader'] }],

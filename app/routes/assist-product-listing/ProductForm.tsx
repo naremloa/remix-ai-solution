@@ -3,13 +3,15 @@ import { zodResolver } from '@hookform/resolvers/zod'
 import { FetchError, ofetch } from 'ofetch'
 import { useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
+import { AutoResizeTextarea } from '~/lib/components/AutoResizeTextarea'
 import { Button } from '~/lib/components/Button'
 import { toast } from '~/lib/hooks/use-toast'
 import { decodeLangchainStream } from '~/lib/utils/stream'
 import { Card, CardContent, CardHeader, CardTitle } from '~/shadcn/components/ui/card'
 import { Form } from '~/shadcn/components/ui/form'
-import { brandOptions, type FormData, formSchema, type ProductGenType } from './consts'
-import { FormInput, FormSelect, FormTextarea } from './FormField'
+import { Label } from '~/shadcn/components/ui/label'
+import { type FormData, formSchema, type ProductGenType } from './consts'
+import { FormInput, FormTextarea } from './FormField'
 import { SpecBox, SpecItem } from './Spec'
 
 export default function ProductForm() {
@@ -28,6 +30,7 @@ export default function ProductForm() {
       detail: '',
     },
   })
+  const [other, setOther] = useState('')
 
   const formData = form.watch()
 
@@ -50,12 +53,13 @@ export default function ProductForm() {
             title: formData.title,
             model: formData.model,
             brand: formData.brand,
+            other,
           },
         },
         responseType: 'stream',
       })
       form.setValue(type, '')
-      decodeLangchainStream({
+      await decodeLangchainStream({
         response,
         decoder: (value) => {
           form.setValue(type, `${form.getValues()[type]}${value}`)
@@ -108,7 +112,7 @@ export default function ProductForm() {
           </form>
         </Form>
       </FormProvider>
-      <div className="flex-1 m-4">
+      <div className="flex-[1] max-w-[450px] m-4">
         <Card className="sticky top-[60px] text-sm">
           <CardHeader>
             <CardTitle>規格</CardTitle>
@@ -118,6 +122,10 @@ export default function ProductForm() {
               <SpecItem label="名稱" value={formData.title}></SpecItem>
               <SpecItem label="型號" value={formData.model}></SpecItem>
               <SpecItem label="品牌" value={formData.brand}></SpecItem>
+              <div className="flex justify-between space-x-4">
+                <Label className="flex-shrink-0">補充資訊</Label>
+                <AutoResizeTextarea value={other} onInput={e => setOther(e.target.value)}></AutoResizeTextarea>
+              </div>
             </SpecBox>
           </CardContent>
         </Card>
