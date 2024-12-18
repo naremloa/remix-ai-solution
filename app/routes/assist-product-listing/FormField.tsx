@@ -3,11 +3,11 @@ import type { FieldPath, FieldValues } from 'react-hook-form'
 import type { Promisable } from 'type-fest'
 import { Sparkles } from 'lucide-react'
 import { useFormContext } from 'react-hook-form'
+import { AutoResizeTextarea } from '~/lib/components/AutoResizeTextarea'
 import { Button } from '~/lib/components/Button'
 import { FormControl, FormField, FormItem, FormLabel, FormMessage } from '~/shadcn/components/ui/form'
 import { Input } from '~/shadcn/components/ui/input'
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from '~/shadcn/components/ui/select'
-import { Textarea } from '~/shadcn/components/ui/textarea'
 
 export function FormInput<TFieldValues extends FieldValues>({ label, name, required, disabled, sparkle }: {
   label: string
@@ -77,7 +77,7 @@ export function FormTextarea<TFieldValues extends FieldValues>({ label, name, re
           </FormLabel>
           <div className="flex space-x-4">
             <FormControl>
-              <Textarea className="flex-1" {...restProps} {...field}></Textarea>
+              <AutoResizeTextarea className="flex-1" {...restProps} {...field}></AutoResizeTextarea>
             </FormControl>
             {sparkle
               ? (

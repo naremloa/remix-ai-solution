@@ -17,20 +17,21 @@ export default function Index() {
   return (
     <Article title="Write Something... ✍️">
       <p>Integrates various solutions attempted using AI.</p>
-      <p className="flex gap-4">
-        <span>Tech Stack:</span>
-        {techStackList.map(props => (<TechStack {...props} key={props.title}></TechStack>))}
+      <p className="flex gap-4 flex-col sm:flex-row">
+        <span className="flex-shrink-0">Tech Stack:</span>
+        <span className="inline-flex gap-4 flex-wrap">
+          {techStackList.map(props => (<TechStack {...props} key={props.title}></TechStack>))}
+        </span>
       </p>
-      <p>
-        DEMO:
-        <p className="flex flex-col gap-4 my-4">
-          {routes.map(route => (
-            <span className="select-none" key={route.path}>
-              <Link to={route.path}>{route.label}</Link>
-              {route.description ? <span>{` - ${route.description}`}</span> : null}
-            </span>
-          ))}
-        </p>
+      <h2 className="text-xl mt-8">DEMO</h2>
+      <p className="flex flex-col gap-4 my-4">
+        {routes.map(route => (
+          <span className="select-none" key={route.path}>
+            <span className="mx-2">-</span>
+            <Link to={route.path}>{route.label}</Link>
+            {route.description ? <span>{` - ${route.description}`}</span> : null}
+          </span>
+        ))}
       </p>
     </Article>
   )

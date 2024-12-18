@@ -1,6 +1,6 @@
 import type { PropsWithoutRef } from 'react'
 import { Plus } from 'lucide-react'
-import { Card, CardContent, CardHeader } from '~/shadcn/components/ui/card'
+import { Card } from '~/shadcn/components/ui/card'
 
 export default function WritingList({ list }: PropsWithoutRef<{ list: unknown[] }>) {
   if (list.length === 0) {

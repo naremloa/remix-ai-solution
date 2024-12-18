@@ -1,32 +1,33 @@
-import type { ChangeEvent, ComponentProps, PropsWithChildren } from 'react'
-import { useRef } from 'react' // 引入 shadcn 的 Textarea 组件
+import type { ComponentProps } from 'react'
+import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { Textarea } from '~/shadcn/components/ui/textarea'
 
-export function AutoResizeTextarea({
-  onInput,
-  ...props
-}: Omit<PropsWithChildren<ComponentProps<'textarea'>>, 'onInput'>
-  & {
-    onInput?: (e: ChangeEvent<HTMLTextAreaElement>) => void
-  }) {
-  const textareaRef = useRef<HTMLTextAreaElement>(null)
+const AutoResizeTextarea = forwardRef<
+  HTMLTextAreaElement | undefined,
+  ComponentProps<'textarea'>
+>(({ value, ...props }, ref) => {
+  const internalRef = useRef<HTMLTextAreaElement | null>(null)
+  useImperativeHandle(ref, () => internalRef.current ?? undefined)
 
-  const handleInput = (e: ChangeEvent<HTMLTextAreaElement>) => {
-    const textarea = textareaRef.current
+  useEffect(() => {
+    const textarea = internalRef.current
     if (textarea) {
       textarea.style.height = 'auto'
       textarea.style.height = `${textarea.scrollHeight}px`
     }
-    onInput?.(e)
-  }
+  }, [value])
 
   return (
     <Textarea
       {...props}
-      ref={textareaRef}
-      onInput={handleInput}
-      className="resize-none" // 禁止用户手动拖动
-      placeholder="输入内容..."
-    />
+      className="resize-none"
+      ref={internalRef}
+      value={value}
+    >
+    </Textarea>
   )
-}
+})
+
+AutoResizeTextarea.displayName = 'AutoResizeTextarea'
+
+export { AutoResizeTextarea }

@@ -1,7 +1,7 @@
 import type { PropsWithChildren } from 'react'
+import type { ButtonProps } from '~/shadcn/components/ui/button'
 import { Loader2 } from 'lucide-react'
 import { useState } from 'react'
-import type { ButtonProps } from '~/shadcn/components/ui/button'
 import { Button as Btn } from '~/shadcn/components/ui/button'
 
 export function Button({ onClick, children, disabled, loading, ...rest }: PropsWithChildren<ButtonProps & { loading?: boolean }>) {

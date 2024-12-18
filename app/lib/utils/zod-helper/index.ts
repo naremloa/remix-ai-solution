@@ -1,15 +1,15 @@
-import type { SafeParseReturnType, TypeOf, ZodSchema } from 'zod';
-import { pipe } from 'ramda';
-import { z, ZodError } from 'zod';
+import type { SafeParseReturnType, TypeOf, ZodSchema } from 'zod'
+import { pipe } from 'ramda'
+import { z, ZodError } from 'zod'
 
 export function zSerializeError(error: ZodError, opts?: { short?: boolean }): string {
-  const { short = false } = opts || {};
+  const { short = false } = opts || {}
   return `ZodError: ${error.errors
     .map((error) => {
-      const message = short ? error.code : `[${error.code}] ${error.message}`;
-      return `${error.path.join('.')}: ${message}`;
+      const message = short ? error.code : `[${error.code}] ${error.message}`
+      return `${error.path.join('.')}: ${message}`
     })
-    .join(', ')}`;
+    .join(', ')}`
 }
 
 export function zSafeParser<Schema extends ZodSchema<unknown>>(schema: Schema) {
@@ -19,53 +19,53 @@ export function zSafeParser<Schema extends ZodSchema<unknown>>(schema: Schema) {
     | { error: null, errorMessage: '', data: TypeOf<Schema> }
     | { error: ZodError, errorMessage: string, data: null }
     > {
-    const parseResult = await schema.safeParseAsync(data) as SafeParseReturnType<unknown, TypeOf<Schema>>;
+    const parseResult = await schema.safeParseAsync(data) as SafeParseReturnType<unknown, TypeOf<Schema>>
     if (parseResult.success) {
       return {
         error: null,
         errorMessage: '',
         data: parseResult.data,
-      };
+      }
     }
     return {
       error: parseResult.error,
       errorMessage: zSerializeError(parseResult.error),
       data: null,
-    };
-  };
+    }
+  }
 }
 
 export function zParser<Schema extends ZodSchema<unknown>>(schema: Schema) {
   return async function (data: unknown): Promise<TypeOf<Schema>> {
     try {
-      const parseResult = (await schema.parseAsync(data)) as TypeOf<Schema>;
-      return parseResult;
+      const parseResult = (await schema.parseAsync(data)) as TypeOf<Schema>
+      return parseResult
     }
     catch (error: unknown) {
       if (error instanceof ZodError) {
-        throw new TypeError(zSerializeError(error));
+        throw new TypeError(zSerializeError(error))
       }
-      throw error;
+      throw error
     }
-  };
+  }
 }
 
 export function zParserSync<Schema extends ZodSchema<unknown>>(schema: Schema) {
   return function (data: unknown): TypeOf<Schema> {
     try {
-      const parseResult = (schema.parse(data)) as TypeOf<Schema>;
-      return parseResult;
+      const parseResult = (schema.parse(data)) as TypeOf<Schema>
+      return parseResult
     }
     catch (error: unknown) {
       if (error instanceof ZodError) {
-        throw new TypeError(zSerializeError(error));
+        throw new TypeError(zSerializeError(error))
       }
-      throw error;
+      throw error
     }
-  };
+  }
 }
 
-type ErrMessage = string | { message?: string };
+type ErrMessage = string | { message?: string }
 
 function applySchemaConstraint<
   Value extends string | number,
@@ -75,10 +75,10 @@ function applySchemaConstraint<
   constraint?: Value | { value: Value, message?: ErrMessage },
 ): Schema | undefined {
   if (constraint === undefined)
-    return undefined;
+    return undefined
   return typeof constraint === 'object'
     ? apply(constraint.value, constraint.message)
-    : apply(constraint);
+    : apply(constraint)
 }
 
 export const zHelper = {
@@ -103,4 +103,4 @@ export const zHelper = {
   nonEmptyString: () => z.string().min(1),
   boolString: () => z.enum(['true', 'false']),
   numeric: () => zHelper.tstring().regex(/^\d+$/),
-};
+}

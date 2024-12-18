@@ -3,8 +3,8 @@ import type { BaseMessagePromptTemplateLike } from '@langchain/core/prompts'
 import type { FormData, ProductGenType } from './assist-product-listing/consts'
 import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { type ActionFunctionArgs, json } from '@remix-run/node'
-import { langchain } from '~/.server/langchain'
 import { isArray } from 'radash'
+import { langchain } from '~/.server/langchain'
 import { createLangchainStream, generateStreamResponseHeader } from '~/lib/utils/stream'
 import {
   detailMessage,

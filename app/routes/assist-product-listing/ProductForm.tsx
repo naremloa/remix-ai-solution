@@ -1,7 +1,8 @@
+import type { PropsWithChildren } from 'react'
 import type { SubmitHandler } from 'react-hook-form'
 import { zodResolver } from '@hookform/resolvers/zod'
 import { FetchError, ofetch } from 'ofetch'
-import { useState } from 'react'
+import { useEffect, useState } from 'react'
 import { FormProvider, useForm } from 'react-hook-form'
 import { AutoResizeTextarea } from '~/lib/components/AutoResizeTextarea'
 import { Button } from '~/lib/components/Button'
@@ -14,7 +15,9 @@ import { type FormData, formSchema, type ProductGenType } from './consts'
 import { FormInput, FormTextarea } from './FormField'
 import { SpecBox, SpecItem } from './Spec'
 
-export default function ProductForm() {
+export default function ProductForm({ demo }: PropsWithChildren<{
+  demo?: Partial<Pick<FormData, 'title' | 'model' | 'brand'> & { other: string }> | null
+}>) {
   const form = useForm<FormData>({
     resolver: zodResolver(formSchema),
     defaultValues: {
@@ -31,6 +34,17 @@ export default function ProductForm() {
     },
   })
   const [other, setOther] = useState('')
+
+  useEffect(() => {
+    if (demo) {
+      form.reset({
+        title: demo.title ?? '',
+        model: demo.model ?? '',
+        brand: demo.brand ?? '',
+      })
+      setOther(demo.other ?? '')
+    }
+  }, [demo, form])
 
   const formData = form.watch()
 
@@ -124,13 +138,16 @@ export default function ProductForm() {
               <SpecItem label="品牌" value={formData.brand}></SpecItem>
               <div className="flex justify-between space-x-4">
                 <Label className="flex-shrink-0">補充資訊</Label>
-                <AutoResizeTextarea value={other} onInput={e => setOther(e.target.value)}></AutoResizeTextarea>
+                <AutoResizeTextarea
+                  value={other}
+                  onChange={e => setOther(e.target.value)}
+                >
+                </AutoResizeTextarea>
               </div>
             </SpecBox>
           </CardContent>
         </Card>
       </div>
     </div>
-
   )
 }

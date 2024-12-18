@@ -10,10 +10,11 @@ export const Link = forwardRef(({ className, to, children, ...props }, ref) => {
   useEffect(() => {
     if (typeof to === 'string') {
       setActive(pathname === to)
-    } else {
+    }
+    else {
       setActive(pathname === to?.pathname)
     }
-  }, [pathname])
+  }, [pathname, to])
   return ((
     <RemixLink
       {...props}
