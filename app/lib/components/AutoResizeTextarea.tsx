@@ -1,11 +1,12 @@
 import type { ComponentProps } from 'react'
 import { forwardRef, useEffect, useImperativeHandle, useRef } from 'react'
 import { Textarea } from '~/shadcn/components/ui/textarea'
+import { cn } from '~/shadcn/utils'
 
 const AutoResizeTextarea = forwardRef<
   HTMLTextAreaElement | undefined,
   ComponentProps<'textarea'>
->(({ value, ...props }, ref) => {
+>(({ value, className, ...props }, ref) => {
   const internalRef = useRef<HTMLTextAreaElement | null>(null)
   useImperativeHandle(ref, () => internalRef.current ?? undefined)
 
@@ -20,7 +21,7 @@ const AutoResizeTextarea = forwardRef<
   return (
     <Textarea
       {...props}
-      className="resize-none"
+      className={cn('resize-none', className)}
       ref={internalRef}
       value={value}
     >

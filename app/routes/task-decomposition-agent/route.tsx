@@ -1,4 +1,5 @@
 import { Article, ArticleHeader } from '~/lib/components/Article'
+import Content from './content'
 
 export default function Index() {
   return (
@@ -8,6 +9,7 @@ export default function Index() {
       ]}
       >
       </ArticleHeader>
+      <Content></Content>
     </Article>
   )
 }
