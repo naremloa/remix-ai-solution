@@ -11,6 +11,9 @@ import { createReadableStreamFromReadable } from '@remix-run/node'
 import { RemixServer } from '@remix-run/react'
 import { isbot } from 'isbot'
 import { renderToPipeableStream } from 'react-dom/server'
+import { createConsola } from '~/lib/utils/consola'
+
+const consola = createConsola()
 
 const ABORT_DELAY = 5_000
 
@@ -79,7 +82,7 @@ function handleBotRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error)
+            consola.error(error)
           }
         },
       },
@@ -129,7 +132,7 @@ function handleBrowserRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error)
+            consola.error(error)
           }
         },
       },

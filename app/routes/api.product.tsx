@@ -5,6 +5,7 @@ import { ChatPromptTemplate } from '@langchain/core/prompts'
 import { type ActionFunctionArgs, json } from '@remix-run/node'
 import { isArray } from 'radash'
 import { langchain } from '~/.server/langchain'
+import { createConsola } from '~/lib/utils/consola'
 import { createLangchainStream, generateStreamResponseHeader } from '~/lib/utils/stream'
 import {
   detailMessage,
@@ -16,6 +17,8 @@ import {
   seoTitleMessage,
   systemMessage,
 } from '~/prompt/assist-listing'
+
+const consola = createConsola()
 
 type RunInput = {
   title: string
@@ -49,8 +52,8 @@ function createChatTemplate<Input extends Record<string, any>>({ systemMessage, 
 
   const template = ChatPromptTemplate.fromMessages<Input>(promptMessages)
   template.format(input()).then((v) => {
-    console.log('input', input())
-    console.log('prompt', v)
+    consola.log('input', input())
+    consola.log('prompt', v)
   })
   return { stream: () => template.pipe(langchain).stream(input()) }
 }

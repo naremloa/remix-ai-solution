@@ -1,4 +1,7 @@
 import type { Runnable } from '@langchain/core/runnables'
+import { createConsola } from '~/lib/utils/consola'
+
+const consola = createConsola()
 
 export function createLangchainStream<Chunk>({ stream, encoder }: {
   stream: () => ReturnType<Runnable<any, Chunk>['stream']>
@@ -16,7 +19,7 @@ export function createLangchainStream<Chunk>({ stream, encoder }: {
       }
       catch (err: unknown) {
         controller.error('Error streaming response')
-        console.error(err)
+        consola.error(err)
       }
     },
   })
