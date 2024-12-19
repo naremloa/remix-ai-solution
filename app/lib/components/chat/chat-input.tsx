@@ -12,14 +12,14 @@ type ChatInputProps = {
 } & TextareaHTMLAttributes<HTMLTextAreaElement>
 
 const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, chat, ...props }, ref) => {
     const [loading, setLoading] = useState(false)
 
     const handleChat = throttle({ interval: 800 }, async () => {
       if (loading)
         return
       setLoading(true)
-      await props.chat()
+      await chat()
       setLoading(false)
     })
 
