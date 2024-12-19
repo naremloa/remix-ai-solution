@@ -1,24 +1,52 @@
-import React from 'react'
+import type { TextareaHTMLAttributes } from 'react'
+import type { Promisable } from 'type-fest'
+import { ArrowUp } from 'lucide-react'
+import { throttle } from 'radash'
+import React, { useState } from 'react'
+import { Button } from '~/lib/components/Button'
 import { cn } from '~/shadcn/utils'
 import { AutoResizeTextarea } from '../AutoResizeTextarea'
 
-type ChatInputProps = {} & React.TextareaHTMLAttributes<HTMLTextAreaElement>
+type ChatInputProps = {
+  chat: () => Promisable<void>
+} & TextareaHTMLAttributes<HTMLTextAreaElement>
 
 const ChatInput = React.forwardRef<HTMLTextAreaElement, ChatInputProps>(
-  ({ className, ...props }, ref) => (
-    <AutoResizeTextarea
-      {...props}
-      autoComplete="off"
-      ref={ref}
-      name="message"
-      className={cn('', className)}
-      // className={cn(
-      //   'max-h-12 px-4 py-3 bg-background text-sm placeholder:text-muted-foreground focus-visible:outline-none focus-visible:ring-ring disabled:cursor-not-allowed disabled:opacity-50 w-full rounded-md flex items-center h-16 resize-none',
-      //   className,
-      // )}
-    >
-    </AutoResizeTextarea>
-  ),
+  ({ className, ...props }, ref) => {
+    const [loading, setLoading] = useState(false)
+
+    const handleChat = throttle({ interval: 800 }, async () => {
+      if (loading)
+        return
+      setLoading(true)
+      await props.chat()
+      setLoading(false)
+    })
+
+    return (
+      <div className="flex flex-col border rounded-lg pb-[8px] px-[8px]">
+        <AutoResizeTextarea
+          {...props}
+          autoComplete="off"
+          ref={ref}
+          name="message"
+          className={cn('focus-visible:ring-0 border-0', className)}
+          onKeyDown={async (e) => {
+            if (e.key === 'Enter' && !e.shiftKey) {
+              e.preventDefault()
+              await handleChat()
+            }
+          }}
+        >
+        </AutoResizeTextarea>
+        <div className="flex justify-end">
+          <Button size="icon" className="rounded-full" loading={loading} onClick={handleChat}>
+            <ArrowUp strokeWidth={3}></ArrowUp>
+          </Button>
+        </div>
+      </div>
+    )
+  },
 )
 ChatInput.displayName = 'ChatInput'
 

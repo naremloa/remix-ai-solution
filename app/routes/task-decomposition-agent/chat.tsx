@@ -62,11 +62,9 @@ export default function Chat() {
         className="max-h-[156px]"
         value={userMessage}
         onChange={e => setUserMessage(e.target.value)}
+        chat={async () => { await new Promise(resolve => setTimeout(resolve, 4000)) }}
       >
       </ChatInput>
-      {/* <Button type="submit" size="icon">
-        <Send className="size-4" />
-      </Button> */}
     </div>
   )
 }
